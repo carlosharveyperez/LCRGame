@@ -5,6 +5,9 @@
         xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
         xmlns:viewModels="clr-namespace:LCRGame.ViewModels"
         mc:Ignorable="d"
+        xmlns:plot="clr-namespace:ScottPlot;assembly=ScottPlot.WPF"
+        xmlns:b="http://schemas.microsoft.com/xaml/behaviors"
+        xmlns:behavior="clr-namespace:LCRGame.Behavior"
         Title="LCR Game" Width="800" Height="400">
     <Window.Resources>
         <viewModels:MainViewModel x:Key="MainViewModel" />
@@ -79,5 +82,13 @@
                 </StackPanel>
             </Grid>
         </Border>
+
+        <Grid Grid.Row="0" Grid.RowSpan="5" Grid.Column="1">
+            <WpfPlot>
+                <b:Interaction.Behaviors>
+                    <behavior:RenderPlotBehavior/>
+                </b:Interaction.Behaviors>
+            </WpfPlot>
+        </Grid>
     </Grid>
 </Window>

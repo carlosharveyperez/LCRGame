@@ -1,7 +1,11 @@
-﻿namespace LCRGame.Models;
+﻿using System.Collections.Generic;
+
+namespace LCRGame.Models;
 
 public class GameResult
 {
+    public List<Game> Games { get; set; }
+
     public int ShortestGame { get; set; }
 
     public int LongestGame { get; set; }

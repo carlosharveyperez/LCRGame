@@ -37,6 +37,8 @@ public class MainViewModel : ValidationBase
 
     public ICommand CancelCommand { get; }
 
+    public event Action<GameResult> RenderPlot;
+
     public ObservableCollection<GameInput> Presets { get; } = new();
 
     private GameInput _selectedPreset;
@@ -152,6 +154,8 @@ public class MainViewModel : ValidationBase
         {
             Debug.WriteLine(e.Message);
         }
+
+        RenderPlot?.Invoke(gr);
         IsSimulationRunning = false;
     }
 

@@ -1,7 +1,6 @@
 ﻿using LCRGame.Models;
 using System;
 using System.Collections.Generic;
-using System.Diagnostics;
 using System.Linq;
 using System.Threading;
 using System.Threading.Tasks;
@@ -11,7 +10,6 @@ namespace LCRGame.Framework;
 public class Simulator
 {
     private int MaxDice { get; } = 3;
-    private bool IsDebugging { get; } = true;
 
     public async Task<GameResult> Run(GameInput gi, CancellationToken ct)
     {
@@ -25,24 +23,17 @@ public class Simulator
         {
             var (game, players) = CreateModels(i, gi, games);
             CreateRelationships(players);
-
-            if (IsDebugging)
-                Debug.WriteLine($"Playing Game:{i}, Players:{gi.Players}");
             PlayGame(players, game, ct);
         }
 
         // Create Game results
         var gr = new GameResult
         {
+            Games = games,
             ShortestGame = games.Select(g => g.Turns).Min(),
             LongestGame = games.Select(g => g.Turns).Max(),
             AverageGame = games.Select(g => g.Turns).Average()
         };
-
-        for (int i = 0; i < games.Count; i++)
-        {
-            Debug.WriteLine($"Winner for Game:{i}, Winner:{games[i].WinnerId}");
-        }
 
         // Calculate winner
         gr.WinnerId = MaxRepeating(games);
