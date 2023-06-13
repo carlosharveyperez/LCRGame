@@ -76,6 +76,8 @@ public class MainViewModel : ValidationBase
         set => SetProperty(ref _isSimulationRunning, value);
     }
 
+    private bool IsDebugging { get; set; } = false;
+
     public bool IsCustomSettingsSelected => SelectedPreset.ToString() == Constants.CustomSettings;
 
     private CancellationTokenSource CancellationTokenSource { get; set; }
@@ -168,14 +170,30 @@ public class MainViewModel : ValidationBase
             {
                 var pr = new PlayerResult();
                 PlayerResults.Add(pr);
-                if (gr?.WinnerId == i + 1)
-                    pr.Label = $"{i + 1} Winner";
-                else
-                    pr.Label = $"{i + 1}";
+                pr.Label = GetPlayerLabel(gr, i + 1);
             }
         }
 
         IsSimulationRunning = false;
+    }
+
+    private string GetPlayerLabel(GameResult gr, int index)
+    {
+        Debug.Assert(gr != null);
+        string label;
+        if (gr.WinnerId == index)
+            label = $"{index} Winner";
+        else
+            label = $"{index}";
+
+        if (IsDebugging)
+        {
+            int gamesWon = gr.Games.Count(g => g.WinnerId == index);
+            double percentage = gamesWon / (double)gr.Games.Count * 100;
+            label += $" {percentage} %";
+        }
+
+        return label;
     }
 
     private void OnCancel()
