@@ -103,7 +103,7 @@
 
         <Border Background="LightBlue" Opacity="0.5" Grid.Row="0" Grid.RowSpan="5" Grid.Column="1" Margin="20,0,0,0"  
                 Visibility="{Binding IsSimulationRunning, Converter={StaticResource BooleanToVisibilityConverter}}">
-            <Grid>
+            <Grid Background="AliceBlue">
                 <StackPanel Orientation="Vertical" HorizontalAlignment="Center" VerticalAlignment="Center">
                     <TextBlock Text="Please, wait while simulation completes..." Margin="5"/>
                     <ProgressBar Height="16" IsIndeterminate="True" VerticalAlignment="Center"/>
