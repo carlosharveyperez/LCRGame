@@ -1,6 +1,7 @@
 ﻿using LCRGame.Models;
 using System;
 using System.Collections.Generic;
+using System.Diagnostics;
 using System.Linq;
 using System.Threading;
 using System.Threading.Tasks;
@@ -107,30 +108,28 @@ public class Simulator
 
     private void PlayGame(List<Player> players, Game game, CancellationToken ct)
     {
-        // Play until only one player has chips
-        var playerWithChips = new List<Player>();
-        playerWithChips.AddRange(players);
+        Debug.WriteLine($"PLAYING GAME: {game.Id}");
 
-        while (playerWithChips.Count != 1)
+        // Play until only one player has chips
+        int expectedNoChipPlayers = players.Count - 1;
+        while (true)
         {
             if (ct.IsCancellationRequested)
                 throw new TaskCanceledException();
 
-            for (int l = 0; l < players.Count; l++)
+            foreach (var player in players)
             {
-                var player = players[l];
-                if (player.Chips > 0)
+                if (player.Chips != 0)
                 {
                     RollDice(player, game);
                     game.Turns++;
                 }
 
-                if (player.Chips == 0) playerWithChips.Remove(player);
-
-                if (playerWithChips.Count == 1)
+                if (players.Count(p => p.Chips == 0) == expectedNoChipPlayers)
                 {
-                    game.WinnerId = playerWithChips.First().Id;
-                    break;
+                    var winner = players.First(p => p.Chips != 0);
+                    game.WinnerId = winner.Id;
+                    return;
                 }
             }
         }
