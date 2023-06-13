@@ -1,4 +1,6 @@
-﻿namespace LCRGame.Models;
+﻿using LCRGame.Framework;
+
+namespace LCRGame.Models;
 
 public class GameInput
 {
@@ -10,7 +12,7 @@ public class GameInput
 
     public override string ToString()
     {
-        if (Players == 0 && Games == 0) return "[None]";
+        if (Players == 0 && Games == 0) return Constants.CustomSettings;
         return $"{Players} players x {Games:0,0} games";
     }
 }

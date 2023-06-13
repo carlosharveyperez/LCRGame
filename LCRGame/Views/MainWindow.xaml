@@ -5,10 +5,9 @@
         xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
         xmlns:viewModels="clr-namespace:LCRGame.ViewModels"
         mc:Ignorable="d"
-        xmlns:plot="clr-namespace:ScottPlot;assembly=ScottPlot.WPF"
         xmlns:b="http://schemas.microsoft.com/xaml/behaviors"
         xmlns:behavior="clr-namespace:LCRGame.Behavior"
-        Title="LCR Game" Width="800" Height="400">
+        Title="LCR Game" Width="1200" Height="800">
     <Window.Resources>
         <viewModels:MainViewModel x:Key="MainViewModel" />
 
@@ -57,13 +56,13 @@
         </StackPanel>
 
         <StackPanel Grid.Row="1" Grid.Column="0" Orientation="Vertical"
-                    IsEnabled="{Binding IsNonePresetSelected, Mode=OneWay}">
+                    IsEnabled="{Binding IsCustomSettingsSelected, Mode=OneWay}">
             <TextBlock Text="Number of Players" Margin="2,5,5,2"/>
             <TextBox Text="{Binding Players, UpdateSourceTrigger=LostFocus, ValidatesOnDataErrors=True}"/>
         </StackPanel>
 
         <StackPanel Grid.Row="2" Grid.Column="0" Orientation="Vertical"
-                    IsEnabled="{Binding IsNonePresetSelected, Mode=OneWay}">
+                    IsEnabled="{Binding IsCustomSettingsSelected, Mode=OneWay}">
             <TextBlock Text="Number of Games" Margin="2,5,5,2"/>
             <TextBox Text="{Binding Games, UpdateSourceTrigger=LostFocus, ValidatesOnDataErrors=True}"/>
         </StackPanel>
@@ -73,7 +72,36 @@
             <Button Content="Cancel" Command="{Binding CancelCommand}" Margin="5"/>
         </StackPanel>
 
-        <Border Background="LightBlue" Opacity="0.5" Grid.Row="4" Grid.Column="0" Grid.ColumnSpan="2" 
+       <Grid Grid.Row="0" Grid.RowSpan="5" Grid.Column="1">
+           <Grid.RowDefinitions>
+               <RowDefinition Height="*"/>
+               <RowDefinition Height="Auto"/>
+           </Grid.RowDefinitions>
+
+            <WpfPlot Grid.Row="0">
+                <b:Interaction.Behaviors>
+                    <behavior:RenderPlotBehavior/>
+                </b:Interaction.Behaviors>
+            </WpfPlot>
+
+            <ItemsControl Grid.Row="1"  ItemsSource="{Binding PlayerResults}" HorizontalAlignment="Center">
+                <ItemsControl.ItemsPanel>
+                    <ItemsPanelTemplate>
+                        <StackPanel Orientation="Horizontal"/>
+                    </ItemsPanelTemplate>
+                </ItemsControl.ItemsPanel>
+                <ItemsControl.ItemTemplate>
+                    <DataTemplate>
+                        <StackPanel Orientation="Vertical">
+                            <Image Margin="10,5,10,5" Source="/Images/user.png" Width="32" Height="32"/>
+                            <TextBlock Text="{Binding Label}" HorizontalAlignment="Center"/>
+                        </StackPanel>
+                    </DataTemplate>
+                </ItemsControl.ItemTemplate>
+            </ItemsControl>
+        </Grid>
+
+        <Border Background="LightBlue" Opacity="0.5" Grid.Row="0" Grid.RowSpan="5" Grid.Column="1" Margin="20,0,0,0"  
                 Visibility="{Binding IsSimulationRunning, Converter={StaticResource BooleanToVisibilityConverter}}">
             <Grid>
                 <StackPanel Orientation="Vertical" HorizontalAlignment="Center" VerticalAlignment="Center">
@@ -82,13 +110,5 @@
                 </StackPanel>
             </Grid>
         </Border>
-
-        <Grid Grid.Row="0" Grid.RowSpan="5" Grid.Column="1">
-            <WpfPlot>
-                <b:Interaction.Behaviors>
-                    <behavior:RenderPlotBehavior/>
-                </b:Interaction.Behaviors>
-            </WpfPlot>
-        </Grid>
     </Grid>
 </Window>

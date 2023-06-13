@@ -30,7 +30,7 @@ public class MainViewModel : ValidationBase
         Presets.Add(new GameInput(6, 100));
         Presets.Add(new GameInput(7, 100));
 
-        SelectedPreset = Presets.First();
+        SelectedPreset = Presets[1];
     }
 
     public ICommand PlayCommand { get; }
@@ -41,6 +41,8 @@ public class MainViewModel : ValidationBase
 
     public ObservableCollection<GameInput> Presets { get; } = new();
 
+    public ObservableCollection<PlayerResult> PlayerResults { get; } = new();
+
     private GameInput _selectedPreset;
     public GameInput SelectedPreset
     {
@@ -48,7 +50,7 @@ public class MainViewModel : ValidationBase
         set
         {
             SetProperty(ref _selectedPreset, value);
-            OnPropertyChanged(nameof(IsNonePresetSelected));
+            OnPropertyChanged(nameof(IsCustomSettingsSelected));
             OnSelectedPresetChanged();
         }
     }
@@ -74,13 +76,13 @@ public class MainViewModel : ValidationBase
         set => SetProperty(ref _isSimulationRunning, value);
     }
 
-    public bool IsNonePresetSelected => SelectedPreset.ToString() == "[None]";
+    public bool IsCustomSettingsSelected => SelectedPreset.ToString() == Constants.CustomSettings;
 
     private CancellationTokenSource CancellationTokenSource { get; set; }
 
     protected override string OnValidateProperty(string propertyName)
     {
-        if (!IsNonePresetSelected) return string.Empty;
+        if (!IsCustomSettingsSelected) return string.Empty;
 
         if (propertyName == nameof(Players))
         {
@@ -105,11 +107,11 @@ public class MainViewModel : ValidationBase
 
     private void OnSelectedPresetChanged()
     {
-        if (IsNonePresetSelected) return;
+        if (IsCustomSettingsSelected) return;
 
-        // We are using a preset, remove custom values
-        Games = string.Empty;
-        Players = string.Empty;
+        // We are using a preset 
+        Players = string.Format($"{SelectedPreset.Players:#,0}");
+        Games = string.Format($"{SelectedPreset.Games:0,0}");
     }
 
     private List<string> ValidateAllProperties()
@@ -138,13 +140,14 @@ public class MainViewModel : ValidationBase
             return;
         }
 
-        var current = IsNonePresetSelected ?
+        var current = IsCustomSettingsSelected ?
             new GameInput(Convert.ToInt32(Players), Convert.ToInt32(Games)) : SelectedPreset;
 
         IsSimulationRunning = true;
         var sim = new Simulator();
         CancellationTokenSource = new CancellationTokenSource();
 
+        bool firePlotUpdate = true;
         GameResult gr = null;
         try
         {
@@ -152,10 +155,26 @@ public class MainViewModel : ValidationBase
         }
         catch (Exception e)
         {
+            firePlotUpdate = false;
             Debug.WriteLine(e.Message);
         }
 
-        RenderPlot?.Invoke(gr);
+        if (firePlotUpdate)
+        {
+            RenderPlot?.Invoke(gr);
+
+            PlayerResults.Clear();
+            for (int i = 0; i < current.Players; i++)
+            {
+                var pr = new PlayerResult();
+                PlayerResults.Add(pr);
+                if (gr?.WinnerId == i + 1)
+                    pr.Label = $"{i + 1} Winner";
+                else
+                    pr.Label = $"{i + 1}";
+            }
+        }
+
         IsSimulationRunning = false;
     }
 
