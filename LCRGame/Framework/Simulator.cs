@@ -1,7 +1,6 @@
 ﻿using LCRGame.Models;
 using System;
 using System.Collections.Generic;
-using System.Diagnostics;
 using System.Linq;
 using System.Threading;
 using System.Threading.Tasks;
@@ -108,8 +107,6 @@ public class Simulator
 
     private void PlayGame(List<Player> players, Game game, CancellationToken ct)
     {
-        Debug.WriteLine($"PLAYING GAME: {game.Id}");
-
         // Play until only one player has chips
         int expectedNoChipPlayers = players.Count - 1;
         while (true)
