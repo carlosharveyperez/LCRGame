@@ -15,10 +15,6 @@
 	</ItemGroup>
   
 	<ItemGroup>
-	  <Folder Include="Behavior\" />
-	</ItemGroup>
-  
-	<ItemGroup>
 	  <Resource Include="Images\user.png" />
 	</ItemGroup>
  </Project>

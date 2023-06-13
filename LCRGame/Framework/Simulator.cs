@@ -32,11 +32,10 @@ public class Simulator
             Games = games,
             ShortestGame = games.Select(g => g.Turns).Min(),
             LongestGame = games.Select(g => g.Turns).Max(),
-            AverageGame = games.Select(g => g.Turns).Average()
+            AverageGame = games.Select(g => g.Turns).Average(),
+            // Calculate winner
+            WinnerId = MaxRepeating(games)
         };
-
-        // Calculate winner
-        gr.WinnerId = MaxRepeating(games);
         gr.GamesWonByWinner = games.Count(g => g.WinnerId == gr.WinnerId);
         gr.WinningPercentage = gr.GamesWonByWinner / (double)games.Count * 100;
 
